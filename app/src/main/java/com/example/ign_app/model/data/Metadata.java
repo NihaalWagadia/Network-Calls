@@ -13,6 +13,11 @@ public class Metadata {
     @Expose
     private String description;
 
+    @SerializedName("slug")
+    @Expose
+    private String slug;
+
+
     @SerializedName("publishDate")
     @Expose
     private String publishDate;
@@ -42,11 +47,20 @@ public class Metadata {
         this.publishDate = publishDate;
     }
 
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
+
     @Override
     public String toString() {
         return "Metadata{" +
                 "headline='" + headline + '\'' +
                 ", description='" + description + '\'' +
+                ", slug='" + slug + '\'' +
                 ", publishDate='" + publishDate + '\'' +
                 '}';
     }

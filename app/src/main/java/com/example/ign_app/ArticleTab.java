@@ -42,11 +42,12 @@ public class ArticleTab extends Fragment {
     private String mParam2;
     private OnFragmentInteractionListener onFragmentInteractionListener;
     private static final String BASE_URL = "https://ign-apis.herokuapp.com/";
+    private static  final String ARTICLE_URL = "https://ign-apis.herokuapp.com/articles/";
     private static final String TAG = "MainActivity";
     RecyclerView recyclerView;
     View view;
     ArrayList<ArticleData> articleDataArrayList = new ArrayList<>();
-    String contentId, headline, urlImage, description, authorName, authorImage;
+    String contentId, headline, urlImage, description, authorName, authorImage, slug;
 
 
     public ArticleTab() {
@@ -95,7 +96,8 @@ public class ArticleTab extends Fragment {
                             "contentId:" + dataArrayList.get(i).getContentId() + "\n" +
                             "Headline:" + dataArrayList.get(i).getMetadata().getHeadline() +"\n" +
                             "publishdate:" + dataArrayList.get(i).getMetadata().getPublishDate() + "\n" +
-                            "Description:" + dataArrayList.get(i).getMetadata().getDescription() + "\n");
+                            "Description:" + dataArrayList.get(i).getMetadata().getDescription() + "\n" +
+                            "Slug:" + "https://ign.com/articles/"+dataArrayList.get(i).getMetadata().getSlug() + "\n" );
                     ArrayList<Thumbnails> thumbnailsArrayList = dataArrayList.get(i).getThumbnails();
                     Log.d(TAG, "onResponse:  \n" +
                             "url:" + thumbnailsArrayList.get(0).getUrl() + "\n" +
@@ -103,20 +105,25 @@ public class ArticleTab extends Fragment {
                             "width:" +  thumbnailsArrayList.get(0).getWidth() + "\n" +
                             "height" +  thumbnailsArrayList.get(0).getHeight() + "\n");
                     ArrayList<Authors> authorsArrayList = dataArrayList.get(i).getAuthors();
-                    Log.d(TAG, "onResponse:  \n" +
-                            "name:" + authorsArrayList.get(0).getName() + "\n" +
-                            "thumbnail" + authorsArrayList.get(0).getThumbnail() + "\n");
 
-                    contentId = dataArrayList.get(i).getContentId();
-                    headline = dataArrayList.get(i).getMetadata().getHeadline();
-                    description = dataArrayList.get(i).getMetadata().getDescription();
-                    urlImage = thumbnailsArrayList.get(0).getUrl();
-                    authorName = authorsArrayList.get(0).getName();
-                    authorImage = authorsArrayList.get(0).getThumbnail();
+                        Log.d(TAG, "onResponse:  \n" +
+                                "name:" + authorsArrayList.get(0).getName() + "\n" +
+                                "thumbnail" + authorsArrayList.get(0).getThumbnail() + "\n");
 
-                    ArticleData articleData = new ArticleData(contentId, headline, description, urlImage, authorName, authorImage);
-                    articleDataArrayList.add(articleData);
-                }
+
+                        contentId = dataArrayList.get(i).getContentId();
+                        headline = dataArrayList.get(i).getMetadata().getHeadline();
+                        description = dataArrayList.get(i).getMetadata().getDescription();
+                        urlImage = thumbnailsArrayList.get(0).getUrl();
+                        authorName = authorsArrayList.get(0).getName();
+                        authorImage = authorsArrayList.get(0).getThumbnail();
+                        slug = "https://ign.com/articles/" + dataArrayList.get(i).getMetadata().getSlug();
+
+                        ArticleData articleData = new ArticleData(contentId, headline, description, urlImage, authorName, authorImage, slug);
+                        articleDataArrayList.add(articleData);
+
+                    }
+
                 ArticleAdapter adapter = new ArticleAdapter(getContext(), articleDataArrayList);
                 recyclerView.setAdapter(adapter);
             }

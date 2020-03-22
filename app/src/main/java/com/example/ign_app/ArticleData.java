@@ -2,7 +2,16 @@ package com.example.ign_app;
 
 public class ArticleData {
 
-    private String contentId, headline, description, urlImage, authorName, authorImage;
+    private String contentId, headline, description, urlImage, authorName, authorImage, slug;
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.contentId = slug;
+    }
+
 
     public String getContentId() {
         return contentId;
@@ -52,12 +61,13 @@ public class ArticleData {
         this.authorImage = authorImage;
     }
 
-    public ArticleData(String contentId, String headline, String description, String urlImage, String authorName, String authorImage) {
+    public ArticleData(String contentId, String headline, String description, String urlImage, String authorName, String authorImage, String slug) {
         this.contentId = contentId;
         this.headline = headline;
         this.description = description;
         this.urlImage = urlImage;
         this.authorName = authorName;
         this.authorImage = authorImage;
+        this.slug = slug;
     }
 }

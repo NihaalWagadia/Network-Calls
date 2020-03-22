@@ -1,10 +1,13 @@
 package com.example.ign_app;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -36,13 +39,20 @@ public class ArticleAdapter extends  RecyclerView.Adapter<ArticleAdapter.Article
     @Override
     public void onBindViewHolder(@NonNull ArticleViewHolder holder, int position) {
 
-        ArticleData articleData = articleDataList.get(position);
+        final ArticleData articleData = articleDataList.get(position);
         holder.head_txt.setText(articleData.getHeadline());
         holder.des_txt.setText(articleData.getDescription());
         holder.authorName_txt.setText(articleData.getAuthorName());
         Picasso.with(mContext).load(articleData.getUrlImage()).into(holder.article_image);
         Picasso.with(mContext).load(articleData.getAuthorImage()).into(holder.author_image);
-
+        holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(articleData.getSlug()));
+                mContext.startActivity(i);
+            }
+        });
 
 
     }
@@ -56,6 +66,7 @@ public class ArticleAdapter extends  RecyclerView.Adapter<ArticleAdapter.Article
 
         TextView head_txt, des_txt, authorName_txt;
         ImageView article_image, author_image;
+        RelativeLayout relativeLayout;
         public ArticleViewHolder(@NonNull View itemView) {
             super(itemView);
             head_txt = itemView.findViewById(R.id.headline_article);
@@ -63,6 +74,8 @@ public class ArticleAdapter extends  RecyclerView.Adapter<ArticleAdapter.Article
             authorName_txt = itemView.findViewById(R.id.article_author_name);
             article_image = itemView.findViewById(R.id.article_image);
             author_image = itemView.findViewById(R.id.article_author);
+            relativeLayout = itemView.findViewById(R.id.relative_layout);
+
         }
     }
 }
