@@ -43,7 +43,7 @@ public class ArticleTab extends Fragment {
     private OnFragmentInteractionListener onFragmentInteractionListener;
     private static final String BASE_URL = "https://ign-apis.herokuapp.com/";
     private static  final String ARTICLE_URL = "https://ign-apis.herokuapp.com/articles/";
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "ArticleTab";
     RecyclerView recyclerView;
     View view;
     ArrayList<ArticleData> articleDataArrayList = new ArrayList<>();
