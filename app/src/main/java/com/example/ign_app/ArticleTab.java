@@ -12,6 +12,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.RequestQueue;
+import com.example.ign_app.CommentPackage.FeedComment;
+import com.example.ign_app.CommentPackage.content.ContentComment;
 import com.example.ign_app.model.Feed;
 import com.example.ign_app.model.data.Authors;
 import com.example.ign_app.model.data.Data;
@@ -42,12 +45,16 @@ public class ArticleTab extends Fragment {
     private String mParam2;
     private OnFragmentInteractionListener onFragmentInteractionListener;
     private static final String BASE_URL = "https://ign-apis.herokuapp.com/";
-    private static  final String ARTICLE_URL = "https://ign-apis.herokuapp.com/articles/";
+    private static final String ARTICLE_URL = "https://ign-apis.herokuapp.com/articles/";
+    private static final String BASEURL2 = "https://ign-apis.herokuapp.com/";
     private static final String TAG = "ArticleTab";
     RecyclerView recyclerView;
     View view;
     ArrayList<ArticleData> articleDataArrayList = new ArrayList<>();
+    ArrayList<CommentData> commentDataArrayList = new ArrayList<>();
+    ArrayList<ContentComment> contentCommentArrayList;
     String contentId, headline, urlImage, description, authorName, authorImage, slug;
+    private RequestQueue mQueue;
 
 
     public ArticleTab() {
@@ -77,12 +84,12 @@ public class ArticleTab extends Fragment {
         super.onCreate(savedInstanceState);
 
 
-        Retrofit retrofit = new Retrofit.Builder()
+        final Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        IgnApi ignApi = retrofit.create(IgnApi.class);
+        final IgnApi ignApi = retrofit.create(IgnApi.class);
         Call<Feed> call = ignApi.getStuff();
         call.enqueue(new Callback<Feed>() {
             @Override
@@ -90,6 +97,7 @@ public class ArticleTab extends Fragment {
                 Log.d(TAG, "onResponse Server Response: " + response.toString());
                 Log.d(TAG, "onResponse received Information: " + response.body().toString());
                 ArrayList<Data> dataArrayList = response.body().getData();
+
                 Log.d("BCSIZE", String.valueOf(dataArrayList.size()));
                 for(int i=0; i<dataArrayList.size() ; i++){
                     Log.d(TAG,"onResposnse: \n" +
@@ -111,6 +119,30 @@ public class ArticleTab extends Fragment {
                                 "thumbnail" + authorsArrayList.get(0).getThumbnail() + "\n");
 
 
+
+                    CommentApi CApi = retrofit.create(CommentApi.class);
+                    Call<FeedComment> call2 = CApi.getStuff(dataArrayList.get(i).getContentId());
+                    call2.enqueue(new Callback<FeedComment>() {
+                        @Override
+                        public void onResponse(Call<FeedComment> call, Response<FeedComment> response) {
+                            contentCommentArrayList = response.body().getContent();
+                            Log.d(TAG,"onResposnse: \n" +
+                                    "COUNTT:" + contentCommentArrayList.get(0).getCount() + "\n" );
+                            String count123 = contentCommentArrayList.get(0).getCount();
+                            String con = contentCommentArrayList.get(0).getId();
+                            Log.d("VA", count123+" " + con);
+                            CommentData commentData = new CommentData(con, count123);
+                            commentDataArrayList.add(commentData);
+                            Log.d("SIZEOFMC", String.valueOf(contentCommentArrayList.size()));
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<FeedComment> call, Throwable t) {
+
+                        }
+                    });
+
                         contentId = dataArrayList.get(i).getContentId();
                         headline = dataArrayList.get(i).getMetadata().getHeadline();
                         description = dataArrayList.get(i).getMetadata().getDescription();
@@ -118,11 +150,11 @@ public class ArticleTab extends Fragment {
                         authorName = authorsArrayList.get(0).getName();
                         authorImage = authorsArrayList.get(0).getThumbnail();
                         slug = "https://ign.com/articles/" + dataArrayList.get(i).getMetadata().getSlug();
-
                         ArticleData articleData = new ArticleData(contentId, headline, description, urlImage, authorName, authorImage, slug);
                         articleDataArrayList.add(articleData);
 
-                    }
+
+                }
 
                 ArticleAdapter adapter = new ArticleAdapter(getContext(), articleDataArrayList);
                 recyclerView.setAdapter(adapter);
@@ -135,6 +167,8 @@ public class ArticleTab extends Fragment {
 
             }
         });
+
+
 
 
 

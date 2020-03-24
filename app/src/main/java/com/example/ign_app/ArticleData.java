@@ -21,6 +21,7 @@ public class ArticleData {
         this.contentId = contentId;
     }
 
+
     public String getHeadline() {
         return headline;
     }
@@ -69,5 +70,6 @@ public class ArticleData {
         this.authorName = authorName;
         this.authorImage = authorImage;
         this.slug = slug;
+
     }
 }

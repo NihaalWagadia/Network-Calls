@@ -57,6 +57,15 @@
                 android:id="@+id/article_author_name">
             </TextView>
 
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/article_description"
+                android:layout_toRightOf="@+id/article_author_name"
+                android:id="@+id/comments">
+
+            </TextView>
+
 
 
         </RelativeLayout>
