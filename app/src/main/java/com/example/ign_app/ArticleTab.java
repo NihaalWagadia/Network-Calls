@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.RequestQueue;
-import com.example.ign_app.CommentPackage.FeedComment;
 import com.example.ign_app.CommentPackage.content.ContentComment;
 import com.example.ign_app.model.Feed;
 import com.example.ign_app.model.data.Authors;
@@ -49,12 +48,18 @@ public class ArticleTab extends Fragment {
     private static final String BASEURL2 = "https://ign-apis.herokuapp.com/";
     private static final String TAG = "ArticleTab";
     RecyclerView recyclerView;
+    LinearLayoutManager manager;
+    ArrayList<String> arrayList = new ArrayList<>();
     View view;
     ArrayList<ArticleData> articleDataArrayList = new ArrayList<>();
     ArrayList<CommentData> commentDataArrayList = new ArrayList<>();
     ArrayList<ContentComment> contentCommentArrayList;
     String contentId, headline, urlImage, description, authorName, authorImage, slug;
+    String idss = "";
     private RequestQueue mQueue;
+    Boolean isScrolling = false;
+    int currentItems, totalItems, ScrolloutItems;
+    public static int START_INDEX = 1;
 
 
     public ArticleTab() {
@@ -82,22 +87,19 @@ public class ArticleTab extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         final Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         final IgnApi ignApi = retrofit.create(IgnApi.class);
-        Call<Feed> call = ignApi.getStuff();
+        Call<Feed> call = ignApi.getStuff(START_INDEX,5);
         call.enqueue(new Callback<Feed>() {
             @Override
             public void onResponse(Call<Feed> call, Response<Feed> response) {
                 Log.d(TAG, "onResponse Server Response: " + response.toString());
                 Log.d(TAG, "onResponse received Information: " + response.body().toString());
                 ArrayList<Data> dataArrayList = response.body().getData();
-
                 Log.d("BCSIZE", String.valueOf(dataArrayList.size()));
                 for(int i=0; i<dataArrayList.size() ; i++){
                     Log.d(TAG,"onResposnse: \n" +
@@ -106,6 +108,9 @@ public class ArticleTab extends Fragment {
                             "publishdate:" + dataArrayList.get(i).getMetadata().getPublishDate() + "\n" +
                             "Description:" + dataArrayList.get(i).getMetadata().getDescription() + "\n" +
                             "Slug:" + "https://ign.com/articles/"+dataArrayList.get(i).getMetadata().getSlug() + "\n" );
+
+//                    idss += dataArrayList.get(i).getContentId()+",";
+//                    Log.d("Collectionsof",idss);
                     ArrayList<Thumbnails> thumbnailsArrayList = dataArrayList.get(i).getThumbnails();
                     Log.d(TAG, "onResponse:  \n" +
                             "url:" + thumbnailsArrayList.get(0).getUrl() + "\n" +
@@ -114,50 +119,24 @@ public class ArticleTab extends Fragment {
                             "height" +  thumbnailsArrayList.get(0).getHeight() + "\n");
                     ArrayList<Authors> authorsArrayList = dataArrayList.get(i).getAuthors();
 
-                        Log.d(TAG, "onResponse:  \n" +
-                                "name:" + authorsArrayList.get(0).getName() + "\n" +
-                                "thumbnail" + authorsArrayList.get(0).getThumbnail() + "\n");
+                    Log.d(TAG, "onResponse:  \n" +
+                            "name:" + authorsArrayList.get(0).getName() + "\n" +
+                            "thumbnail" + authorsArrayList.get(0).getThumbnail() + "\n");
 
-
-
-                    CommentApi CApi = retrofit.create(CommentApi.class);
-                    Call<FeedComment> call2 = CApi.getStuff(dataArrayList.get(i).getContentId());
-                    call2.enqueue(new Callback<FeedComment>() {
-                        @Override
-                        public void onResponse(Call<FeedComment> call, Response<FeedComment> response) {
-                            contentCommentArrayList = response.body().getContent();
-                            Log.d(TAG,"onResposnse: \n" +
-                                    "COUNTT:" + contentCommentArrayList.get(0).getCount() + "\n" );
-                            String count123 = contentCommentArrayList.get(0).getCount();
-                            String con = contentCommentArrayList.get(0).getId();
-                            Log.d("VA", count123+" " + con);
-                            CommentData commentData = new CommentData(con, count123);
-                            commentDataArrayList.add(commentData);
-                            Log.d("SIZEOFMC", String.valueOf(contentCommentArrayList.size()));
-
-                        }
-
-                        @Override
-                        public void onFailure(Call<FeedComment> call, Throwable t) {
-
-                        }
-                    });
-
-                        contentId = dataArrayList.get(i).getContentId();
-                        headline = dataArrayList.get(i).getMetadata().getHeadline();
-                        description = dataArrayList.get(i).getMetadata().getDescription();
-                        urlImage = thumbnailsArrayList.get(0).getUrl();
-                        authorName = authorsArrayList.get(0).getName();
-                        authorImage = authorsArrayList.get(0).getThumbnail();
-                        slug = "https://ign.com/articles/" + dataArrayList.get(i).getMetadata().getSlug();
-                        ArticleData articleData = new ArticleData(contentId, headline, description, urlImage, authorName, authorImage, slug);
-                        articleDataArrayList.add(articleData);
-
+                    contentId = dataArrayList.get(i).getContentId();
+                    headline = dataArrayList.get(i).getMetadata().getHeadline();
+                    description = dataArrayList.get(i).getMetadata().getDescription();
+                    urlImage = thumbnailsArrayList.get(0).getUrl();
+                    authorName = authorsArrayList.get(0).getName();
+                    authorImage = authorsArrayList.get(0).getThumbnail();
+                    slug = "https://ign.com/articles/" + dataArrayList.get(i).getMetadata().getSlug();
+                    ArticleData articleData = new ArticleData(contentId, headline, description, urlImage, authorName, authorImage, slug);
+                    articleDataArrayList.add(articleData);
 
                 }
-
                 ArticleAdapter adapter = new ArticleAdapter(getContext(), articleDataArrayList);
                 recyclerView.setAdapter(adapter);
+
             }
 
             @Override
@@ -167,7 +146,6 @@ public class ArticleTab extends Fragment {
 
             }
         });
-
 
 
 

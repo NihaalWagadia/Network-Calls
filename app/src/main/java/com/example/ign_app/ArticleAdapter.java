@@ -13,21 +13,36 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.ign_app.CommentPackage.FeedComment;
+import com.example.ign_app.CommentPackage.content.ContentComment;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ArticleAdapter extends  RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder> {
 
 
     private Context mContext;
     private List<ArticleData> articleDataList;
-  //  private List<CommentData> commentDataList;
+    private static final String BASE_URL = "https://ign-apis.herokuapp.com/";
+    List<CommentData> commentDataList;
+    ArrayList<ContentComment> contentCommentArrayList;
+
+
+
 
     public ArticleAdapter(Context mContext, List<ArticleData> articleDataList) {
         this.mContext = mContext;
         this.articleDataList = articleDataList;
     //    this.commentDataList = commentDataList;
+
     }
 
     @NonNull
@@ -39,16 +54,52 @@ public class ArticleAdapter extends  RecyclerView.Adapter<ArticleAdapter.Article
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ArticleViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ArticleViewHolder holder, int position) {
 
         final ArticleData articleData = articleDataList.get(position);
-       // final CommentData commentData = commentDataList.get(0);
+       // final CommentData commentData = commentDataList.get(position);
         holder.head_txt.setText(articleData.getHeadline());
         holder.des_txt.setText(articleData.getDescription());
         holder.authorName_txt.setText(articleData.getAuthorName());
         Picasso.with(mContext).load(articleData.getUrlImage()).into(holder.article_image);
-        Picasso.with(mContext).load(articleData.getAuthorImage()).into(holder.author_image);
-     //   holder.comments.setText(commentData.getComment());
+
+
+        final Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        CommentApi CApi = retrofit.create(CommentApi.class);
+            Call<FeedComment> call2 = CApi.getStuff(articleData.getContentId());
+            call2.enqueue(new Callback<FeedComment>() {
+                @Override
+                public void onResponse(Call<FeedComment> call, Response<FeedComment> response) {
+                    contentCommentArrayList= response.body().getContent();
+//                    Log.d(TAG, "onResposnse: \n" +
+//                            "COUNTT:" + contentCommentArrayList.get(i).getCount() + "\n");
+//
+//
+//                        String count123 = contentCommentArrayList.get(i).getCoun;
+//                        String con = contentCommentArrayList.get(i).getId();
+//
+//                        Log.d("BENCHOD", count123 + " " + con);
+                    holder.comments.setText(contentCommentArrayList.get(0).getCount());
+
+                }
+
+                @Override
+                public void onFailure(Call<FeedComment> call, Throwable t) {
+
+                }
+            });
+
+        if (articleData.getAuthorImage().isEmpty()) {
+            Picasso.with(mContext).load(R.drawable.ic_launcher_background).into(holder.author_image);
+        } else{
+            Picasso.with(mContext).load(articleData.getAuthorImage()).into(holder.author_image);
+        }
+
+        //holder.comments.setText(commentData.getComment());
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -61,6 +112,20 @@ public class ArticleAdapter extends  RecyclerView.Adapter<ArticleAdapter.Article
 
     }
 
+
+//    private static DiffUtil.ItemCallback<Data> dataItemCallback =
+//            new DiffUtil.ItemCallback<Data>() {
+//                @Override
+//                public boolean areItemsTheSame(@NonNull Data oldItem, @NonNull Data newItem) {
+//                    return oldItem.getContentId() == newItem.getContentId();
+//                }
+//
+//                @SuppressLint("DiffUtilEquals")
+//                @Override
+//                public boolean areContentsTheSame(@NonNull Data oldItem, @NonNull Data newItem) {
+//                    return oldItem.equals(newItem);
+//                }
+//            };
     @Override
     public int getItemCount() {
         return articleDataList.size();
