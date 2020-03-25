@@ -34,6 +34,9 @@ public class ArticleAdapter extends  RecyclerView.Adapter<ArticleAdapter.Article
     private static final String BASE_URL = "https://ign-apis.herokuapp.com/";
     List<CommentData> commentDataList;
     ArrayList<ContentComment> contentCommentArrayList;
+    private static final int VIEW_TYPE_LOADING = 0;
+    private static final int VIEW_TYPE_NORMAL = 1;
+    private boolean isLoaderVisible = false;
 
 
 
@@ -48,6 +51,17 @@ public class ArticleAdapter extends  RecyclerView.Adapter<ArticleAdapter.Article
     @NonNull
     @Override
     public ArticleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+//        switch (viewType){
+//            case VIEW_TYPE_NORMAL:
+//
+//            case  VIEW_TYPE_LOADING:
+//                return  new ArticleViewHolder(
+//                        LayoutInflater.from(parent.getContext()).inflate(R.layout.articlecard,parent,false));
+//
+//            default:
+//                return null;
+//
+//        }
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.articlecard, null);
         return new ArticleViewHolder(view);
@@ -113,19 +127,27 @@ public class ArticleAdapter extends  RecyclerView.Adapter<ArticleAdapter.Article
     }
 
 
+
+//    @Override
+//    public int getItemViewType(int position) {
+//        if (isLoaderVisible) {
+//            return position == articleDataList.size() - 1 ? VIEW_TYPE_LOADING : VIEW_TYPE_NORMAL;
+//        } else {
+//            return VIEW_TYPE_NORMAL;
+//        }
+//    }
 //    private static DiffUtil.ItemCallback<Data> dataItemCallback =
 //            new DiffUtil.ItemCallback<Data>() {
 //                @Override
 //                public boolean areItemsTheSame(@NonNull Data oldItem, @NonNull Data newItem) {
-//                    return oldItem.getContentId() == newItem.getContentId();
+//                    return oldItem.getContentId()
 //                }
 //
-//                @SuppressLint("DiffUtilEquals")
 //                @Override
 //                public boolean areContentsTheSame(@NonNull Data oldItem, @NonNull Data newItem) {
-//                    return oldItem.equals(newItem);
+//                    return false;
 //                }
-//            };
+//            }
     @Override
     public int getItemCount() {
         return articleDataList.size();

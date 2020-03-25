@@ -2,6 +2,7 @@ package com.example.ign_app;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +13,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.RequestQueue;
-import com.example.ign_app.CommentPackage.content.ContentComment;
 import com.example.ign_app.model.Feed;
 import com.example.ign_app.model.data.Authors;
 import com.example.ign_app.model.data.Data;
@@ -26,6 +25,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import static com.example.ign_app.PaginationScrollListener.PAGE_START;
 
 
 /**
@@ -48,18 +49,15 @@ public class ArticleTab extends Fragment {
     private static final String BASEURL2 = "https://ign-apis.herokuapp.com/";
     private static final String TAG = "ArticleTab";
     RecyclerView recyclerView;
-    LinearLayoutManager manager;
-    ArrayList<String> arrayList = new ArrayList<>();
     View view;
     ArrayList<ArticleData> articleDataArrayList = new ArrayList<>();
-    ArrayList<CommentData> commentDataArrayList = new ArrayList<>();
-    ArrayList<ContentComment> contentCommentArrayList;
     String contentId, headline, urlImage, description, authorName, authorImage, slug;
-    String idss = "";
-    private RequestQueue mQueue;
-    Boolean isScrolling = false;
-    int currentItems, totalItems, ScrolloutItems;
     public static int START_INDEX = 1;
+    private int currentPage = PAGE_START;
+    private boolean isLastPage = false;
+    private int totalPage = 10;
+    private boolean isLoading = false;
+    int itemCount = 0;
 
 
     public ArticleTab() {
@@ -93,7 +91,7 @@ public class ArticleTab extends Fragment {
                 .build();
 
         final IgnApi ignApi = retrofit.create(IgnApi.class);
-        Call<Feed> call = ignApi.getStuff(START_INDEX,5);
+        Call<Feed> call = ignApi.getStuff(1,10);
         call.enqueue(new Callback<Feed>() {
             @Override
             public void onResponse(Call<Feed> call, Response<Feed> response) {
@@ -135,7 +133,31 @@ public class ArticleTab extends Fragment {
 
                 }
                 ArticleAdapter adapter = new ArticleAdapter(getContext(), articleDataArrayList);
+                recyclerView.addOnScrollListener(new PaginationScrollListener(new LinearLayoutManager(getContext())) {
+                    @Override
+                    protected void loadMoreItems() {
+                        isLoading = true;
+                        currentPage++;
+                        Log.d("YAHAPAR","ZAHA");
+
+                        callingApi(currentPage);
+                        Log.d("YAHAPAR","VAHA");
+
+                    }
+
+                    @Override
+                    public boolean isLastPage() {
+                        return isLastPage;
+                    }
+
+                    @Override
+                    public boolean isLoading() {
+                        return isLoading;
+                    }
+                });
                 recyclerView.setAdapter(adapter);
+                Log.d("YAHAPAR","CHECK");
+
 
             }
 
@@ -159,9 +181,80 @@ public class ArticleTab extends Fragment {
         view = inflater.inflate(R.layout.fragment_article_tab, container, false);
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
+//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         return view;
     }
+
+    private void callingApi(final int currentPage) {
+
+     new Handler().postDelayed(new Runnable() {
+         @Override
+         public void run() {
+             final Retrofit retrofit = new Retrofit.Builder()
+                     .baseUrl(BASE_URL)
+                     .addConverterFactory(GsonConverterFactory.create())
+                     .build();
+
+             final IgnApi ignApi = retrofit.create(IgnApi.class);
+             Log.d("currentPage", String.valueOf(ArticleTab.this.currentPage +1));
+             Call<Feed> call = ignApi.getStuff(currentPage,10);
+             call.enqueue(new Callback<Feed>() {
+                 @Override
+                 public void onResponse(Call<Feed> call, Response<Feed> response) {
+                     Log.d(TAG, "onResponse Server Response: " + response.toString());
+                     Log.d(TAG, "onResponse received Information: " + response.body().toString());
+                     ArrayList<Data> dataArrayList = response.body().getData();
+                     Log.d("BCSIZE", String.valueOf(dataArrayList.size()));
+                     for(int i=0; i<dataArrayList.size() ; i++){
+                         Log.d(TAG,"onResposnse: \n" +
+                                 "contentId:" + dataArrayList.get(i).getContentId() + "\n" +
+                                 "Headline:" + dataArrayList.get(i).getMetadata().getHeadline() +"\n" +
+                                 "publishdate:" + dataArrayList.get(i).getMetadata().getPublishDate() + "\n" +
+                                 "Description:" + dataArrayList.get(i).getMetadata().getDescription() + "\n" +
+                                 "Slug:" + "https://ign.com/articles/"+dataArrayList.get(i).getMetadata().getSlug() + "\n" );
+
+//                    idss += dataArrayList.get(i).getContentId()+",";
+//                    Log.d("Collectionsof",idss);
+                         ArrayList<Thumbnails> thumbnailsArrayList = dataArrayList.get(i).getThumbnails();
+                         Log.d(TAG, "onResponse:  \n" +
+                                 "url:" + thumbnailsArrayList.get(0).getUrl() + "\n" +
+                                 "size:" +  thumbnailsArrayList.get(0).getSize() + "\n" +
+                                 "width:" +  thumbnailsArrayList.get(0).getWidth() + "\n" +
+                                 "height" +  thumbnailsArrayList.get(0).getHeight() + "\n");
+                         ArrayList<Authors> authorsArrayList = dataArrayList.get(i).getAuthors();
+
+                         Log.d(TAG, "onResponse:  \n" +
+                                 "name:" + authorsArrayList.get(0).getName() + "\n" +
+                                 "thumbnail" + authorsArrayList.get(0).getThumbnail() + "\n");
+
+                         contentId = dataArrayList.get(i).getContentId();
+                         headline = dataArrayList.get(i).getMetadata().getHeadline();
+                         description = dataArrayList.get(i).getMetadata().getDescription();
+                         urlImage = thumbnailsArrayList.get(0).getUrl();
+                         authorName = authorsArrayList.get(0).getName();
+                         authorImage = authorsArrayList.get(0).getThumbnail();
+                         slug = "https://ign.com/articles/" + dataArrayList.get(i).getMetadata().getSlug();
+                         ArticleData articleData = new ArticleData(contentId, headline, description, urlImage, authorName, authorImage, slug);
+                         articleDataArrayList.add(articleData);
+
+                     }
+                     ArticleAdapter adapter = new ArticleAdapter(getContext(), articleDataArrayList);
+                     recyclerView.setAdapter(adapter);
+
+                 }
+
+                 @Override
+                 public void onFailure(Call<Feed> call, Throwable t) {
+                     Log.d(TAG, "onFailure:Something is wrong " + t.getMessage());
+                     Toast.makeText(getContext(), "Something is wrong", Toast.LENGTH_SHORT).show();
+
+                 }
+             });
+         }
+     },1500);
+    }
+
 
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
