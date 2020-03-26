@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public abstract class PaginationScrollListener extends RecyclerView.OnScrollListener {
-    public static final int PAGE_START = 1;
+    public static int PAGE_START = 1;
     @NonNull
     private LinearLayoutManager layoutManager;
     /**

@@ -20,6 +20,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -156,7 +157,8 @@ public class ArticleAdapter extends  RecyclerView.Adapter<ArticleAdapter.Article
     class ArticleViewHolder extends RecyclerView.ViewHolder{
 
         TextView head_txt, des_txt, authorName_txt, comments;
-        ImageView article_image, author_image;
+        ImageView article_image;
+        CircleImageView author_image;
         RelativeLayout relativeLayout;
         public ArticleViewHolder(@NonNull View itemView) {
             super(itemView);

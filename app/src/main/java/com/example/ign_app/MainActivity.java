@@ -5,19 +5,25 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 
+
 public class MainActivity extends AppCompatActivity implements ArticleTab.OnFragmentInteractionListener, VideoTab.OnFragmentInteractionListener{
 
+    Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("IGN");
         Log.d("Hey","1");
 
-        TabLayout tabLayout = findViewById(R.id.tablayout);
+        final TabLayout tabLayout = findViewById(R.id.tablayout);
         tabLayout.addTab(tabLayout.newTab().setText("Article"));
         tabLayout.addTab(tabLayout.newTab().setText("Video"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
@@ -31,6 +37,8 @@ public class MainActivity extends AppCompatActivity implements ArticleTab.OnFrag
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
+                if(tab.getPosition() == 1){
+                }
             }
 
             @Override
