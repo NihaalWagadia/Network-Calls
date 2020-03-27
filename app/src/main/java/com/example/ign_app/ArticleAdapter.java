@@ -154,6 +154,16 @@ public class ArticleAdapter extends  RecyclerView.Adapter<ArticleAdapter.Article
         return articleDataList.size();
     }
 
+    public void clear() {
+        articleDataList.clear();
+        notifyDataSetChanged();
+    }
+
+        public void addItems(List<ArticleData> articleData) {
+        articleData.addAll(articleDataList);
+        notifyDataSetChanged();
+    }
+
     class ArticleViewHolder extends RecyclerView.ViewHolder{
 
         TextView head_txt, des_txt, authorName_txt, comments;
