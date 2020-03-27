@@ -51,7 +51,7 @@ public class ArticleTab extends Fragment {
     RecyclerView recyclerView;
     View view;
    // ArrayList<ArticleData> articleDataArrayListDup = new ArrayList<>();
-    ArrayList<ArticleData> articleDataArrayList = new ArrayList<>();
+//    ArrayList<ArticleData> articleDataArrayList = new ArrayList<>();
 
     String contentId, headline, urlImage, description, authorName, authorImage, slug;
     public static int START_INDEX = 1;
@@ -92,8 +92,7 @@ public class ArticleTab extends Fragment {
         super.onCreate(savedInstanceState);
 
 
-        callingApi(1);
-        adapter = new ArticleAdapter(getContext(), articleDataArrayList);
+       callingApi(currentPage);
 
 
 
@@ -111,20 +110,20 @@ public class ArticleTab extends Fragment {
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
+        adapter = new ArticleAdapter(getContext(), new ArrayList<ArticleData>());
         recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager) {
             @Override
             protected void loadMoreItems() {
               //  articleDataArrayList.clear();
                 isLoading = true;
              //  adapter.clear();
-                pageStart = pageStart+10;
+                currentPage = currentPage+10;
              //   adapter.addItems(articleDataArrayList);
 
-                callingApi(pageStart);
+                callingApi(currentPage);
 //                adapter.addItems(articleDataArrayList);
                 //adapter.clear();
-                
+
             }
 
             @Override
@@ -141,14 +140,15 @@ public class ArticleTab extends Fragment {
         return view;
     }
 
-    private void callingApi( final int currentPage) {
-        this.pageStart = currentPage;
+    private void callingApi( int index) {
+
         //articleDataArrayList = new ArrayList<>();
        //articleDataArrayList.clear();
         //  articleDataArrayList.add(null);
        // adapter.addItems(articleDataArrayList);
       //  final ArrayList<ArticleData> articleDataArrayList = new ArrayList<>();
 
+        final int finalCurrentPage = index;
         new Handler().postDelayed(new Runnable() {
          @Override
          public void run() {
@@ -160,10 +160,12 @@ public class ArticleTab extends Fragment {
 
              final IgnApi ignApi = retrofit.create(IgnApi.class);
              Log.d("currentPage", String.valueOf(ArticleTab.this.currentPage +1));
-             Call<Feed> call = ignApi.getStuff(currentPage+10,10);
+             Call<Feed> call = ignApi.getStuff(finalCurrentPage,10);
              call.enqueue(new Callback<Feed>() {
                  @Override
                  public void onResponse(Call<Feed> call, Response<Feed> response) {
+                     final ArrayList<ArticleData> articleDataArrayList = new ArrayList<>();
+
                      isLoading=false;
                      Log.d(TAG, "onResponse Server Response: " + response.toString());
                      Log.d(TAG, "onResponse received Information: " + response.body().toString());
@@ -201,10 +203,16 @@ public class ArticleTab extends Fragment {
                          articleDataArrayList.add(articleData);
 
                      }
-                     adapter.addItems(articleDataArrayList);
-                     //articleDataArrayList.clear();
+                     Log.d("data1", String.valueOf(articleDataArrayList));
 
-                     if (currentPage==300){
+                     adapter.addItems(articleDataArrayList);
+                     Log.d("data2", String.valueOf(articleDataArrayList));
+                     //articleDataArrayList.clear();
+                     recyclerView.setAdapter(adapter);
+                     Log.d("data3", String.valueOf(articleDataArrayList));
+
+
+                     if (finalCurrentPage ==300){
                          isLastPage = true;
                      }
                      isLoading=false;
