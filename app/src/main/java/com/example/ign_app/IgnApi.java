@@ -13,9 +13,7 @@ public interface IgnApi {
 
     @Headers("Content-Type: application/json")
     @GET("articles")
-    Call<Feed> getStuff(@Query("startIndex")int startIndex,
+    Call<Feed> getArticleJson(@Query("startIndex")int startIndex,
                         @Query("count")int count);
 
-//    @GET("comments")
-//    Call<FeedComment> getCommentsValue(@Query("ids") String ids);
 }

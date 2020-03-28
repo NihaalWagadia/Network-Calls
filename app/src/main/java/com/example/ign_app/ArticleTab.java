@@ -1,5 +1,7 @@
 package com.example.ign_app;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -7,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -54,7 +55,6 @@ public class ArticleTab extends Fragment {
 //    ArrayList<ArticleData> articleDataArrayList = new ArrayList<>();
 
     String contentId, headline, urlImage, description, authorName, authorImage, slug;
-    public static int START_INDEX = 1;
     int currentPage = PAGE_START;
     int pageStart = 1;
     private boolean isLastPage = false;
@@ -91,13 +91,7 @@ public class ArticleTab extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
        callingApi(currentPage);
-
-
-
-
-
 
     }
 
@@ -111,18 +105,15 @@ public class ArticleTab extends Fragment {
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         adapter = new ArticleAdapter(getContext(), new ArrayList<ArticleData>());
+        recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(new PaginationScrollListener(layoutManager) {
             @Override
             protected void loadMoreItems() {
-              //  articleDataArrayList.clear();
                 isLoading = true;
-             //  adapter.clear();
                 currentPage = currentPage+10;
-             //   adapter.addItems(articleDataArrayList);
 
                 callingApi(currentPage);
-//                adapter.addItems(articleDataArrayList);
-                //adapter.clear();
+
 
             }
 
@@ -142,11 +133,7 @@ public class ArticleTab extends Fragment {
 
     private void callingApi( int index) {
 
-        //articleDataArrayList = new ArrayList<>();
-       //articleDataArrayList.clear();
-        //  articleDataArrayList.add(null);
-       // adapter.addItems(articleDataArrayList);
-      //  final ArrayList<ArticleData> articleDataArrayList = new ArrayList<>();
+
 
         final int finalCurrentPage = index;
         new Handler().postDelayed(new Runnable() {
@@ -160,7 +147,7 @@ public class ArticleTab extends Fragment {
 
              final IgnApi ignApi = retrofit.create(IgnApi.class);
              Log.d("currentPage", String.valueOf(ArticleTab.this.currentPage +1));
-             Call<Feed> call = ignApi.getStuff(finalCurrentPage,10);
+             Call<Feed> call = ignApi.getArticleJson(finalCurrentPage,10);
              call.enqueue(new Callback<Feed>() {
                  @Override
                  public void onResponse(Call<Feed> call, Response<Feed> response) {
@@ -203,28 +190,38 @@ public class ArticleTab extends Fragment {
                          articleDataArrayList.add(articleData);
 
                      }
-                     Log.d("data1", String.valueOf(articleDataArrayList));
-
                      adapter.addItems(articleDataArrayList);
-                     Log.d("data2", String.valueOf(articleDataArrayList));
-                     //articleDataArrayList.clear();
-                     recyclerView.setAdapter(adapter);
-                     Log.d("data3", String.valueOf(articleDataArrayList));
-
 
                      if (finalCurrentPage ==300){
                          isLastPage = true;
                      }
                      isLoading=false;
-
                  }
 
 
                  @Override
                  public void onFailure(Call<Feed> call, Throwable t) {
                      isLoading=false;
-                     Log.d(TAG, "onFailure:Something is wrong " + t.getMessage());
-                     Toast.makeText(getContext(), "Something is wrong", Toast.LENGTH_SHORT).show();
+                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
+                     alertDialog.setTitle("Not connected to Internet!");
+                     alertDialog.setCancelable(false);
+
+                     alertDialog.setPositiveButton("Retry", new DialogInterface.OnClickListener() {
+                         @Override
+                         public void onClick(DialogInterface dialogInterface, int i) {
+                             callingApi(currentPage);
+                         }
+                     });
+                     alertDialog.setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+                         @Override
+                         public void onClick(DialogInterface dialogInterface, int i) {
+                             getActivity().finish();
+                             System.exit(0);
+
+                         }
+                     });
+                     AlertDialog alertDialog1 = alertDialog.create();
+                     alertDialog1.show();
 
                  }
              });

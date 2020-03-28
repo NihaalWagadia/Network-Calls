@@ -4,14 +4,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public abstract class PaginationScrollListener extends RecyclerView.OnScrollListener {
+public abstract class VideoPageScroller extends RecyclerView.OnScrollListener {
+
     public static int PAGE_START = 1;
     @NonNull
     private LinearLayoutManager layoutManager;
 
     private static final int PAGE_SIZE = 10;
 
-    public PaginationScrollListener(@NonNull LinearLayoutManager layoutManager) {
+    public VideoPageScroller(@NonNull LinearLayoutManager layoutManager) {
         this.layoutManager = layoutManager;
     }
     @Override

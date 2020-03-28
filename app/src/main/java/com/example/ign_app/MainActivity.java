@@ -2,7 +2,6 @@ package com.example.ign_app;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -21,7 +20,6 @@ public class MainActivity extends AppCompatActivity implements ArticleTab.OnFrag
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("IGN");
-        Log.d("Hey","1");
 
         final TabLayout tabLayout = findViewById(R.id.tablayout);
         tabLayout.addTab(tabLayout.newTab().setText("Article"));

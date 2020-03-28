@@ -5,11 +5,13 @@ import com.example.ign_app.VideoPackage.FeedVideo;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
+import retrofit2.http.Query;
 
 public interface VideoIGN {
-    String BASE_URL = "https://ign-apis.herokuapp.com/videos/";
+    String BASE_URL = "https://ign-apis.herokuapp.com/";
 
     @Headers("Content-Type: application/json")
-    @GET("videos?startIndex=30\\u0026count=5")
-    Call<FeedVideo> getStuff();
+    @GET("videos")
+    Call<FeedVideo> getVideoData(@Query("startIndex")int startIndex,
+                             @Query("count")int count);
 }

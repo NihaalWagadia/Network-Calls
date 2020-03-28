@@ -2,7 +2,6 @@ package com.example.ign_app;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,19 +58,11 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
                 .build();
 
         CommentApi CApi = retrofit.create(CommentApi.class);
-        Call<FeedComment> call2 = CApi.getStuff(videoConst.getContentId());
+        Call<FeedComment> call2 = CApi.getCommentCount(videoConst.getContentId());
         call2.enqueue(new Callback<FeedComment>() {
             @Override
             public void onResponse(Call<FeedComment> call, Response<FeedComment> response) {
                 contentCommentArrayList= response.body().getContent();
-//                    Log.d(TAG, "onResposnse: \n" +
-//                            "COUNTT:" + contentCommentArrayList.get(i).getCount() + "\n");
-//
-//
-//                        String count123 = contentCommentArrayList.get(i).getCoun;
-//                        String con = contentCommentArrayList.get(i).getId();
-//
-//                        Log.d("BENCHOD", count123 + " " + con);
                 holder.commentValue.setText(contentCommentArrayList.get(0).getCount());
 
             }
@@ -84,16 +75,12 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
 
 
 
-
-
-
-
         Picasso.with(mContext).load(videoConst.getImgUrl()).into(holder.imageView);
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(videoConst.getVideoUrl()));
+                Intent i = new Intent(mContext, WebViewActivity.class);
+                i.putExtra("URL", videoConst.getVideoUrl());
                 mContext.startActivity(i);
             }
         });
@@ -103,6 +90,11 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
     @Override
     public int getItemCount() {
         return videoConstList.size();
+    }
+
+    public void addItems(List<VideoConst> videoConsts) {
+        videoConstList.addAll(videoConsts);
+        notifyDataSetChanged();
     }
 
     class VideoViewHolder extends RecyclerView.ViewHolder{

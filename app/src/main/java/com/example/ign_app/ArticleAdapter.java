@@ -2,10 +2,10 @@ package com.example.ign_app;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -52,17 +52,7 @@ public class ArticleAdapter extends  RecyclerView.Adapter<ArticleAdapter.Article
     @NonNull
     @Override
     public ArticleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-//        switch (viewType){
-//            case VIEW_TYPE_NORMAL:
-//
-//            case  VIEW_TYPE_LOADING:
-//                return  new ArticleViewHolder(
-//                        LayoutInflater.from(parent.getContext()).inflate(R.layout.articlecard,parent,false));
-//
-//            default:
-//                return null;
-//
-//        }
+
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.articlecard, null);
         return new ArticleViewHolder(view);
@@ -72,7 +62,6 @@ public class ArticleAdapter extends  RecyclerView.Adapter<ArticleAdapter.Article
     public void onBindViewHolder(@NonNull final ArticleViewHolder holder, int position) {
 
         final ArticleData articleData = articleDataList.get(position);
-       // final CommentData commentData = commentDataList.get(position);
         holder.head_txt.setText(articleData.getHeadline());
         holder.des_txt.setText(articleData.getDescription());
         holder.authorName_txt.setText(articleData.getAuthorName());
@@ -85,19 +74,12 @@ public class ArticleAdapter extends  RecyclerView.Adapter<ArticleAdapter.Article
                 .build();
 
         CommentApi CApi = retrofit.create(CommentApi.class);
-            Call<FeedComment> call2 = CApi.getStuff(articleData.getContentId());
+            Call<FeedComment> call2 = CApi.getCommentCount(articleData.getContentId());
             call2.enqueue(new Callback<FeedComment>() {
                 @Override
                 public void onResponse(Call<FeedComment> call, Response<FeedComment> response) {
                     contentCommentArrayList= response.body().getContent();
-//                    Log.d(TAG, "onResposnse: \n" +
-//                            "COUNTT:" + contentCommentArrayList.get(i).getCount() + "\n");
-//
-//
-//                        String count123 = contentCommentArrayList.get(i).getCoun;
-//                        String con = contentCommentArrayList.get(i).getId();
-//
-//                        Log.d("BENCHOD", count123 + " " + con);
+
                     holder.comments.setText(contentCommentArrayList.get(0).getCount());
 
                 }
@@ -114,53 +96,27 @@ public class ArticleAdapter extends  RecyclerView.Adapter<ArticleAdapter.Article
             Picasso.with(mContext).load(articleData.getAuthorImage()).into(holder.author_image);
         }
 
-        //holder.comments.setText(commentData.getComment());
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(articleData.getSlug()));
+                Intent i = new Intent(mContext, WebViewActivity.class);
+                i.putExtra("URL", articleData.getSlug());
                 mContext.startActivity(i);
+
             }
         });
-
-
     }
 
 
-
-//    @Override
-//    public int getItemViewType(int position) {
-//        if (isLoaderVisible) {
-//            return position == articleDataList.size() - 1 ? VIEW_TYPE_LOADING : VIEW_TYPE_NORMAL;
-//        } else {
-//            return VIEW_TYPE_NORMAL;
-//        }
-//    }
-//    private static DiffUtil.ItemCallback<Data> dataItemCallback =
-//            new DiffUtil.ItemCallback<Data>() {
-//                @Override
-//                public boolean areItemsTheSame(@NonNull Data oldItem, @NonNull Data newItem) {
-//                    return oldItem.getContentId()
-//                }
-//
-//                @Override
-//                public boolean areContentsTheSame(@NonNull Data oldItem, @NonNull Data newItem) {
-//                    return false;
-//                }
-//            }
     @Override
     public int getItemCount() {
         return articleDataList.size();
     }
 
-    public void clear() {
-        articleDataList.clear();
-        notifyDataSetChanged();
-    }
+
 
         public void addItems(List<ArticleData> articleData) {
-        articleData.addAll(articleDataList);
+        articleDataList.addAll(articleData);
         notifyDataSetChanged();
     }
 
@@ -170,6 +126,7 @@ public class ArticleAdapter extends  RecyclerView.Adapter<ArticleAdapter.Article
         ImageView article_image;
         CircleImageView author_image;
         RelativeLayout relativeLayout;
+        WebView webView;
         public ArticleViewHolder(@NonNull View itemView) {
             super(itemView);
             head_txt = itemView.findViewById(R.id.headline_article);

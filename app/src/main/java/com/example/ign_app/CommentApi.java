@@ -13,5 +13,5 @@ public interface CommentApi {
 
     @Headers("Content-Type: application/json")
     @GET("comments")
-    Call<FeedComment> getStuff(@Query("ids") String ids);
+    Call<FeedComment> getCommentCount(@Query("ids") String ids);
 }
