@@ -14,15 +14,15 @@ public class VideosData {
 
     @SerializedName("metadata")
     @Expose
-    private MetadataVideo metadata;
+    private VideoMetadata metadata;
 
     @SerializedName("thumbnails")
     @Expose
-    private ArrayList<ThumbnailsVideo> thumbnails;
+    private ArrayList<VideoThumbnails> thumbnails;
 
     @SerializedName("assets")
     @Expose
-    private ArrayList<Assets> assets;
+    private ArrayList<VideoAssets> assets;
 
     public String getContentId() {
         return contentId;
@@ -32,27 +32,27 @@ public class VideosData {
         this.contentId = contentId;
     }
 
-    public MetadataVideo getMetadata() {
+    public VideoMetadata getMetadata() {
         return metadata;
     }
 
-    public void setMetadata(MetadataVideo metadata) {
+    public void setMetadata(VideoMetadata metadata) {
         this.metadata = metadata;
     }
 
-    public ArrayList<ThumbnailsVideo> getThumbnails() {
+    public ArrayList<VideoThumbnails> getThumbnails() {
         return thumbnails;
     }
 
-    public void setThumbnails(ArrayList<ThumbnailsVideo> thumbnails) {
+    public void setThumbnails(ArrayList<VideoThumbnails> thumbnails) {
         this.thumbnails = thumbnails;
     }
 
-    public ArrayList<Assets> getAssets() {
+    public ArrayList<VideoAssets> getAssets() {
         return assets;
     }
 
-    public void setAssets(ArrayList<Assets> assets) {
+    public void setAssets(ArrayList<VideoAssets> assets) {
         this.assets = assets;
     }
 

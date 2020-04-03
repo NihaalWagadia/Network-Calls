@@ -3,7 +3,7 @@ package com.example.ign_app.videomodel.videodata;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class MetadataVideo {
+public class VideoMetadata {
 
     @SerializedName("title")
     @Expose

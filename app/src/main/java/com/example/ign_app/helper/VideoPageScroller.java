@@ -15,6 +15,7 @@ public abstract class VideoPageScroller extends RecyclerView.OnScrollListener {
     public VideoPageScroller(@NonNull LinearLayoutManager layoutManager) {
         this.layoutManager = layoutManager;
     }
+
     @Override
     public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
@@ -29,7 +30,10 @@ public abstract class VideoPageScroller extends RecyclerView.OnScrollListener {
             }
         }
     }
+
     protected abstract void loadMoreItems();
+
     public abstract boolean isLastPage();
+
     public abstract boolean isLoading();
 }

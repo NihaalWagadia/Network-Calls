@@ -14,7 +14,7 @@ public class Data {
 
     @SerializedName("metadata")
     @Expose
-    private  Metadata metadata;
+    private Metadata metadata;
 
     @SerializedName("thumbnails")
     @Expose
@@ -22,7 +22,7 @@ public class Data {
 
     @SerializedName("authors")
     @Expose
-    private  ArrayList<Authors> authors;
+    private ArrayList<Authors> authors;
 
     public String getContentId() {
         return contentId;

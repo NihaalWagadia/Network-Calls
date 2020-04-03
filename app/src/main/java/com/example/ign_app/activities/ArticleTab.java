@@ -19,7 +19,7 @@ import com.example.ign_app.helper.ArticleData;
 import com.example.ign_app.networkcalls.IgnApi;
 import com.example.ign_app.helper.PaginationScrollListener;
 import com.example.ign_app.R;
-import com.example.ign_app.articlemodel.Feed;
+import com.example.ign_app.articlemodel.ArticleApiResponse;
 import com.example.ign_app.articlemodel.data.Authors;
 import com.example.ign_app.articlemodel.data.Data;
 import com.example.ign_app.articlemodel.data.Thumbnails;
@@ -152,10 +152,10 @@ public class ArticleTab extends Fragment {
 
              final IgnApi ignApi = retrofit.create(IgnApi.class);
              Log.d("currentPage", String.valueOf(ArticleTab.this.currentPage +1));
-             Call<Feed> call = ignApi.getArticleJson(finalCurrentPage,10);
-             call.enqueue(new Callback<Feed>() {
+             Call<ArticleApiResponse> call = ignApi.getArticleJson(finalCurrentPage,10);
+             call.enqueue(new Callback<ArticleApiResponse>() {
                  @Override
-                 public void onResponse(Call<Feed> call, Response<Feed> response) {
+                 public void onResponse(Call<ArticleApiResponse> call, Response<ArticleApiResponse> response) {
                      final ArrayList<ArticleData> articleDataArrayList = new ArrayList<>();
 
                      isLoading=false;
@@ -205,7 +205,7 @@ public class ArticleTab extends Fragment {
 
 
                  @Override
-                 public void onFailure(Call<Feed> call, Throwable t) {
+                 public void onFailure(Call<ArticleApiResponse> call, Throwable t) {
                      isLoading=false;
                      AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
                      alertDialog.setTitle("Not connected to Internet!");

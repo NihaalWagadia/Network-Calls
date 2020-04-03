@@ -3,8 +3,7 @@ package com.example.ign_app.videomodel.videodata;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ThumbnailsVideo {
-
+public class VideoAssets {
     @SerializedName("url")
     @Expose
     private String url;
@@ -19,7 +18,7 @@ public class ThumbnailsVideo {
 
     @Override
     public String toString() {
-        return "ThumbnailsVideo{" +
+        return "Assets{" +
                 "url='" + url + '\'' +
                 '}';
     }

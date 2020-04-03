@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
-public class Feed {
+public class ArticleApiResponse {
 
     public ArrayList<Data> getData() {
         return data;

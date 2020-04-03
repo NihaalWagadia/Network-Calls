@@ -1,6 +1,6 @@
 package com.example.ign_app.helper;
 
-public class VideoConst {
+public class VideoData {
 
     String contentId, title, description, imgUrl, videoUrl;
 
@@ -44,7 +44,7 @@ public class VideoConst {
         this.videoUrl = videoUrl;
     }
 
-    public VideoConst(String contentId, String title, String description, String imgUrl, String videoUrl) {
+    public VideoData(String contentId, String title, String description, String imgUrl, String videoUrl) {
         this.contentId = contentId;
         this.title = title;
         this.description = description;

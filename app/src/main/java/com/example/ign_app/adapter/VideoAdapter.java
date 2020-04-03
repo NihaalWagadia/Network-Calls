@@ -13,10 +13,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ign_app.networkcalls.CommentApi;
-import com.example.ign_app.commentpackage.FeedComment;
+import com.example.ign_app.commentpackage.CommentApiResponse;
 import com.example.ign_app.commentpackage.content.ContentComment;
 import com.example.ign_app.R;
-import com.example.ign_app.helper.VideoConst;
+import com.example.ign_app.helper.VideoData;
 import com.example.ign_app.activities.WebViewActivity;
 import com.squareup.picasso.Picasso;
 
@@ -31,15 +31,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHolder> {
 
-    private  Context mContext;
-    private  List<VideoConst> videoConstList;
+    private Context mContext;
+    private List<VideoData> videoDataList;
     private static final String BASE_URL = "https://ign-apis.herokuapp.com/";
     ArrayList<ContentComment> contentCommentArrayList;
 
 
-    public VideoAdapter(Context context, List<VideoConst> videoConstsList){
+    public VideoAdapter(Context context, List<VideoData> videoConstsList) {
         this.mContext = context;
-        this.videoConstList = videoConstsList;
+        this.videoDataList = videoConstsList;
     }
 
     @NonNull
@@ -53,8 +53,8 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
     @Override
     public void onBindViewHolder(@NonNull final VideoViewHolder holder, int position) {
 
-        final  VideoConst videoConst = videoConstList.get(position);
-        holder.title.setText(videoConst.getTitle());
+        final VideoData videoData = videoDataList.get(position);
+        holder.title.setText(videoData.getTitle());
 
         final Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -62,26 +62,27 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
                 .build();
 
         CommentApi CApi = retrofit.create(CommentApi.class);
-        Call<FeedComment> call2 = CApi.getCommentCount(videoConst.getContentId());
-        call2.enqueue(new Callback<FeedComment>() {
+        Call<CommentApiResponse> call2 = CApi.getCommentCount(videoData.getContentId());
+        call2.enqueue(new Callback<CommentApiResponse>() {
             @Override
-            public void onResponse(Call<FeedComment> call, Response<FeedComment> response) {
-                contentCommentArrayList= response.body().getContent();
+            public void onResponse(Call<CommentApiResponse> call, Response<CommentApiResponse> response) {
+                contentCommentArrayList = response.body().getContent();
                 holder.commentValue.setText(contentCommentArrayList.get(0).getCount());
 
             }
+
             @Override
-            public void onFailure(Call<FeedComment> call, Throwable t) {
+            public void onFailure(Call<CommentApiResponse> call, Throwable t) {
 
             }
         });
 
-        Picasso.with(mContext).load(videoConst.getImgUrl()).into(holder.imageView);
+        Picasso.with(mContext).load(videoData.getImgUrl()).into(holder.imageView);
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(mContext, WebViewActivity.class);
-                i.putExtra("URL", videoConst.getVideoUrl());
+                i.putExtra("URL", videoData.getVideoUrl());
                 mContext.startActivity(i);
             }
         });
@@ -90,20 +91,21 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
 
     @Override
     public int getItemCount() {
-        return videoConstList.size();
+        return videoDataList.size();
     }
 
-    public void addItems(List<VideoConst> videoConsts) {
-        videoConstList.addAll(videoConsts);
+    public void addItems(List<VideoData> videoData) {
+        videoDataList.addAll(videoData);
         notifyDataSetChanged();
     }
 
-    class VideoViewHolder extends RecyclerView.ViewHolder{
+    class VideoViewHolder extends RecyclerView.ViewHolder {
 
         TextView title, commentValue;
         ImageView imageView;
         RelativeLayout relativeLayout;
-        public VideoViewHolder(@NonNull View itemView){
+
+        public VideoViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.video_title);
             imageView = itemView.findViewById(R.id.video_image);

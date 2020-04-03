@@ -17,10 +17,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.ign_app.adapter.VideoAdapter;
 import com.example.ign_app.networkcalls.VideoIGN;
 import com.example.ign_app.R;
-import com.example.ign_app.helper.VideoConst;
+import com.example.ign_app.helper.VideoData;
 import com.example.ign_app.videomodel.FeedVideo;
-import com.example.ign_app.videomodel.videodata.Assets;
-import com.example.ign_app.videomodel.videodata.ThumbnailsVideo;
+import com.example.ign_app.videomodel.videodata.VideoAssets;
+import com.example.ign_app.videomodel.videodata.VideoThumbnails;
 import com.example.ign_app.videomodel.videodata.VideosData;
 import com.example.ign_app.helper.VideoPageScroller;
 
@@ -55,7 +55,6 @@ public class VideoTab extends Fragment {
     private boolean isLoading = false;
 
 
-
     public VideoTab() {
         // Required empty public constructor
     }
@@ -86,7 +85,7 @@ public class VideoTab extends Fragment {
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
-        videoAdapter = new VideoAdapter(getContext(), new ArrayList<VideoConst>());
+        videoAdapter = new VideoAdapter(getContext(), new ArrayList<VideoData>());
         recyclerView.setAdapter(videoAdapter);
         recyclerView.addOnScrollListener(new VideoPageScroller(layoutManager) {
             @Override
@@ -124,48 +123,48 @@ public class VideoTab extends Fragment {
                         .build();
 
                 VideoIGN videoIGN = retrofit.create(VideoIGN.class);
-                Call<FeedVideo> call = videoIGN.getVideoData(currentPage,10);
+                Call<FeedVideo> call = videoIGN.getVideoData(currentPage, 10);
                 call.enqueue(new Callback<FeedVideo>() {
                     @Override
                     public void onResponse(Call<FeedVideo> call, Response<FeedVideo> response) {
-                        final ArrayList<VideoConst> videoConstArrayList  = new ArrayList<>();
+                        final ArrayList<VideoData> videoDataArrayList = new ArrayList<>();
                         isLoading = false;
                         Log.d(TAG, "onResponse Server Response: " + response.toString());
                         Log.d(TAG, "onResponse received Information: " + response.body().toString());
                         ArrayList<VideosData> videosDataArrayList = response.body().getData();
-                        for(int i=0; i<videosDataArrayList.size() ; i++) {
+                        for (int i = 0; i < videosDataArrayList.size(); i++) {
                             Log.d(TAG, "onResposnse: \n" +
                                     "contentId:" + videosDataArrayList.get(i).getContentId() + "\n" +
                                     "Title:" + videosDataArrayList.get(i).getMetadata().getTitle() + "\n" +
                                     "publishdate:" + videosDataArrayList.get(i).getMetadata().getPublishDate() + "\n" +
                                     "Description:" + videosDataArrayList.get(i).getMetadata().getDescription() + "\n" + "\n");
 
-                            ArrayList<ThumbnailsVideo> thumbnailsVideoArrayList = videosDataArrayList.get(i).getThumbnails();
+                            ArrayList<VideoThumbnails> videoThumbnailsArrayList = videosDataArrayList.get(i).getThumbnails();
                             Log.d(TAG, "onResponse:  \n" +
-                                    "url:" + thumbnailsVideoArrayList.get(2).getUrl() + "\n");
+                                    "url:" + videoThumbnailsArrayList.get(2).getUrl() + "\n");
 
-                            ArrayList<Assets> assetsArrayList = videosDataArrayList.get(i).getAssets();
+                            ArrayList<VideoAssets> videoAssetsArrayList = videosDataArrayList.get(i).getAssets();
 
                             Log.d(TAG, "onResponse:  \n" +
-                                    "urlVideo:" + assetsArrayList.get(3).getUrl() + "\n");
+                                    "urlVideo:" + videoAssetsArrayList.get(3).getUrl() + "\n");
 
 
                             contentId = videosDataArrayList.get(i).getContentId();
                             title = videosDataArrayList.get(i).getMetadata().getTitle();
                             description = videosDataArrayList.get(i).getMetadata().getDescription();
-                            imgUrl = thumbnailsVideoArrayList.get(2).getUrl();
-                            videoUrl = assetsArrayList.get(3).getUrl();
+                            imgUrl = videoThumbnailsArrayList.get(2).getUrl();
+                            videoUrl = videoAssetsArrayList.get(3).getUrl();
 
 
-                            VideoConst videoConst = new VideoConst(contentId, title, description, imgUrl, videoUrl);
-                            videoConstArrayList.add(videoConst);
+                            VideoData videoData = new VideoData(contentId, title, description, imgUrl, videoUrl);
+                            videoDataArrayList.add(videoData);
 
                         }
-                        videoAdapter.addItems(videoConstArrayList);
-                        if (currentPage ==300){
+                        videoAdapter.addItems(videoDataArrayList);
+                        if (currentPage == 300) {
                             isLastPage = true;
                         }
-                        isLoading=false;
+                        isLoading = false;
 
                     }
 
@@ -197,7 +196,7 @@ public class VideoTab extends Fragment {
                 });
 
             }
-        },1500);
+        }, 1500);
 
     }
 

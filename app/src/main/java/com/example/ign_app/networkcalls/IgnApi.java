@@ -1,6 +1,6 @@
 package com.example.ign_app.networkcalls;
 
-import com.example.ign_app.articlemodel.Feed;
+import com.example.ign_app.articlemodel.ArticleApiResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -13,7 +13,7 @@ public interface IgnApi {
 
     @Headers("Content-Type: application/json")
     @GET("articles")
-    Call<Feed> getArticleJson(@Query("startIndex")int startIndex,
-                        @Query("count")int count);
+    Call<ArticleApiResponse> getArticleJson(@Query("startIndex") int startIndex,
+                                            @Query("count") int count);
 
 }

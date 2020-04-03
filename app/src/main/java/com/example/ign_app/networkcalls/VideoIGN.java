@@ -12,6 +12,6 @@ public interface VideoIGN {
 
     @Headers("Content-Type: application/json")
     @GET("videos")
-    Call<FeedVideo> getVideoData(@Query("startIndex")int startIndex,
-                             @Query("count")int count);
+    Call<FeedVideo> getVideoData(@Query("startIndex") int startIndex,
+                                 @Query("count") int count);
 }

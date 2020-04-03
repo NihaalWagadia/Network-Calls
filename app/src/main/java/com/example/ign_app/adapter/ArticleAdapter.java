@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.ign_app.helper.ArticleData;
 import com.example.ign_app.networkcalls.CommentApi;
 import com.example.ign_app.helper.CommentData;
-import com.example.ign_app.commentpackage.FeedComment;
+import com.example.ign_app.commentpackage.CommentApiResponse;
 import com.example.ign_app.commentpackage.content.ContentComment;
 import com.example.ign_app.R;
 import com.example.ign_app.activities.WebViewActivity;
@@ -32,7 +32,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ArticleAdapter extends  RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder> {
+public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder> {
 
 
     private Context mContext;
@@ -45,12 +45,10 @@ public class ArticleAdapter extends  RecyclerView.Adapter<ArticleAdapter.Article
     private boolean isLoaderVisible = false;
 
 
-
-
     public ArticleAdapter(Context mContext, List<ArticleData> articleDataList) {
         this.mContext = mContext;
         this.articleDataList = articleDataList;
-    //    this.commentDataList = commentDataList;
+        //    this.commentDataList = commentDataList;
 
     }
 
@@ -79,25 +77,25 @@ public class ArticleAdapter extends  RecyclerView.Adapter<ArticleAdapter.Article
                 .build();
 
         CommentApi CApi = retrofit.create(CommentApi.class);
-            Call<FeedComment> call2 = CApi.getCommentCount(articleData.getContentId());
-            call2.enqueue(new Callback<FeedComment>() {
-                @Override
-                public void onResponse(Call<FeedComment> call, Response<FeedComment> response) {
-                    contentCommentArrayList= response.body().getContent();
+        Call<CommentApiResponse> call2 = CApi.getCommentCount(articleData.getContentId());
+        call2.enqueue(new Callback<CommentApiResponse>() {
+            @Override
+            public void onResponse(Call<CommentApiResponse> call, Response<CommentApiResponse> response) {
+                contentCommentArrayList = response.body().getContent();
 
-                    holder.comments.setText(contentCommentArrayList.get(0).getCount());
+                holder.comments.setText(contentCommentArrayList.get(0).getCount());
 
-                }
+            }
 
-                @Override
-                public void onFailure(Call<FeedComment> call, Throwable t) {
+            @Override
+            public void onFailure(Call<CommentApiResponse> call, Throwable t) {
 
-                }
-            });
+            }
+        });
 
         if (articleData.getAuthorImage().isEmpty()) {
             Picasso.with(mContext).load(R.drawable.ic_launcher_background).into(holder.author_image);
-        } else{
+        } else {
             Picasso.with(mContext).load(articleData.getAuthorImage()).into(holder.author_image);
         }
 
@@ -119,19 +117,19 @@ public class ArticleAdapter extends  RecyclerView.Adapter<ArticleAdapter.Article
     }
 
 
-
-        public void addItems(List<ArticleData> articleData) {
+    public void addItems(List<ArticleData> articleData) {
         articleDataList.addAll(articleData);
         notifyDataSetChanged();
     }
 
-    class ArticleViewHolder extends RecyclerView.ViewHolder{
+    class ArticleViewHolder extends RecyclerView.ViewHolder {
 
         TextView head_txt, des_txt, authorName_txt, comments;
         ImageView article_image;
         CircleImageView author_image;
         RelativeLayout relativeLayout;
         WebView webView;
+
         public ArticleViewHolder(@NonNull View itemView) {
             super(itemView);
             head_txt = itemView.findViewById(R.id.headline_article);

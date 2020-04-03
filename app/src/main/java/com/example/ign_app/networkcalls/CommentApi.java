@@ -1,6 +1,6 @@
 package com.example.ign_app.networkcalls;
 
-import com.example.ign_app.commentpackage.FeedComment;
+import com.example.ign_app.commentpackage.CommentApiResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -13,5 +13,5 @@ public interface CommentApi {
 
     @Headers("Content-Type: application/json")
     @GET("comments")
-    Call<FeedComment> getCommentCount(@Query("ids") String ids);
+    Call<CommentApiResponse> getCommentCount(@Query("ids") String ids);
 }
