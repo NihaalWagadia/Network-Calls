@@ -59,7 +59,8 @@ public class ArticleTab extends Fragment {
    // ArrayList<ArticleData> articleDataArrayListDup = new ArrayList<>();
 //    ArrayList<ArticleData> articleDataArrayList = new ArrayList<>();
 
-    String contentId, headline, urlImage, description, authorName, authorImage, slug;
+    //tesyestOYE
+    String contentId, headline, urlImage, description, authorName, authorImage, slug, oyo;
     int currentPage = PAGE_START;
     int pageStart = 1;
     private boolean isLastPage = false;
