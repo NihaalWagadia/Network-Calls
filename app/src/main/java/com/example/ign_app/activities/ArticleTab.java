@@ -70,7 +70,7 @@ public class ArticleTab extends Fragment {
     ArticleAdapter adapter;
     LinearLayoutManager layoutManager;
 
-
+//convert to kotlin
     public ArticleTab() {
         // Required empty public constructor
     }
