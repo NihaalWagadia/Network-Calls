@@ -66,8 +66,8 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
         call2.enqueue(new Callback<CommentApiResponse>() {
             @Override
             public void onResponse(Call<CommentApiResponse> call, Response<CommentApiResponse> response) {
-                contentCommentArrayList = response.body().getContent();
-                holder.commentValue.setText(contentCommentArrayList.get(0).getCount());
+                contentCommentArrayList = response.body().content;
+                holder.commentValue.setText(contentCommentArrayList.get(0).count);
 
             }
 
