@@ -25,7 +25,6 @@ class MainActivity : AppCompatActivity(), ArticleTab.OnFragmentInteractionListen
         tabLayout.addTab(tabLayout.newTab().setText("Article"))
         tabLayout.addTab(tabLayout.newTab().setText("Video"))
         tabLayout.tabGravity = TabLayout.GRAVITY_FILL
-
         val viewPager = findViewById<ViewPager>(R.id.ViewPager)
         val adapter = PagerAdapter(supportFragmentManager, tabLayout.tabCount)
         viewPager.adapter = adapter

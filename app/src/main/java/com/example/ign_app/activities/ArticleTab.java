@@ -35,68 +35,28 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import static com.example.ign_app.helper.PaginationScrollListener.PAGE_START;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ArticleTab#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class ArticleTab extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-    private OnFragmentInteractionListener onFragmentInteractionListener;
+public class ArticleTab extends Fragment {
+
     private static final String BASE_URL = "https://ign-apis.herokuapp.com/";
-    private static final String ARTICLE_URL = "https://ign-apis.herokuapp.com/articles/";
-    private static final String BASEURL2 = "https://ign-apis.herokuapp.com/";
     private static final String TAG = "ArticleTab";
     RecyclerView recyclerView;
     View view;
-    // ArrayList<ArticleData> articleDataArrayListDup = new ArrayList<>();
-//    ArrayList<ArticleData> articleDataArrayList = new ArrayList<>();
 
-    //tesyestOYE
     String contentId, headline, urlImage, description, authorName, authorImage, slug, oyo;
     int currentPage = PAGE_START;
-    int pageStart = 1;
     private boolean isLastPage = false;
-    private int totalPage = 10;
     private boolean isLoading = false;
-    int itemCount = 0;
     ArticleAdapter adapter;
     LinearLayoutManager layoutManager;
 
-    //convert to kotlin
     public ArticleTab() {
         // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ArticleTab.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ArticleTab newInstance(String param1, String param2) {
-        ArticleTab fragment = new ArticleTab();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         callingApi(currentPage);
 
     }
@@ -117,9 +77,7 @@ public class ArticleTab extends Fragment {
             protected void loadMoreItems() {
                 isLoading = true;
                 currentPage = currentPage+10;
-
                 callingApi(currentPage);
-
 
             }
 
@@ -138,8 +96,6 @@ public class ArticleTab extends Fragment {
     }
 
     private void callingApi( int index) {
-
-
 
         final int finalCurrentPage = index;
         new Handler().postDelayed(new Runnable() {
@@ -234,7 +190,6 @@ public class ArticleTab extends Fragment {
             }
         },1500);
     }
-
 
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
