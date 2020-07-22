@@ -1,15 +1,15 @@
-package com.example.ign_app.articlemodel
+package com.example.ign_app.videomodel
 
-import com.example.ign_app.articlemodel.data.Data
+import com.example.ign_app.videomodel.videodata.VideosData
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import java.util.*
 
-class ArticleApiResponse {
+class FeedVideo {
 
     @SerializedName("data")
     @Expose
-    lateinit var data: ArrayList<Data>
+    var data: ArrayList<VideosData>? = null
     override fun toString(): String {
         return "Feed{" +
                 "data=" + data +

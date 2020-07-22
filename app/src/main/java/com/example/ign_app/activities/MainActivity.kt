@@ -42,4 +42,5 @@ class MainActivity : AppCompatActivity(), ArticleTab.OnFragmentInteractionListen
     }
 
     override fun onFragmentInteraction(uri: Uri) {}
+
 }

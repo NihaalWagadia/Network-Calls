@@ -113,89 +113,86 @@ public class VideoTab extends Fragment {
     private void callingVideoApi(int index) {
 
         final int currentPage = index;
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
+        new Handler().postDelayed(() -> {
 
-                final Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(BASE_URL)
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build();
+            final Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
 
-                VideoIGN videoIGN = retrofit.create(VideoIGN.class);
-                Call<FeedVideo> call = videoIGN.getVideoData(currentPage, 10);
-                call.enqueue(new Callback<FeedVideo>() {
-                    @Override
-                    public void onResponse(Call<FeedVideo> call, Response<FeedVideo> response) {
-                        final ArrayList<VideoData> videoDataArrayList = new ArrayList<>();
-                        isLoading = false;
-                        Log.d(TAG, "onResponse Server Response: " + response.toString());
-                        Log.d(TAG, "onResponse received Information: " + response.body().toString());
-                        ArrayList<VideosData> videosDataArrayList = response.body().getData();
-                        for (int i = 0; i < videosDataArrayList.size(); i++) {
-                            Log.d(TAG, "onResposnse: \n" +
-                                    "contentId:" + videosDataArrayList.get(i).getContentId() + "\n" +
-                                    "Title:" + videosDataArrayList.get(i).getMetadata().getTitle() + "\n" +
-                                    "publishdate:" + videosDataArrayList.get(i).getMetadata().getPublishDate() + "\n" +
-                                    "Description:" + videosDataArrayList.get(i).getMetadata().getDescription() + "\n" + "\n");
+            VideoIGN videoIGN = retrofit.create(VideoIGN.class);
+            Call<FeedVideo> call = videoIGN.getVideoData(currentPage, 10);
+            call.enqueue(new Callback<FeedVideo>() {
+                @Override
+                public void onResponse(Call<FeedVideo> call, Response<FeedVideo> response) {
+                    final ArrayList<VideoData> videoDataArrayList = new ArrayList<>();
+                    isLoading = false;
+                    Log.d(TAG, "onResponse Server Response: " + response.toString());
+                    Log.d(TAG, "onResponse received Information: " + response.body().toString());
+                    ArrayList<VideosData> videosDataArrayList = response.body().getData();
+                    for (int i = 0; i < videosDataArrayList.size(); i++) {
+                        Log.d(TAG, "onResposnse: \n" +
+                                "contentId:" + videosDataArrayList.get(i).getContentId() + "\n" +
+                                "Title:" + videosDataArrayList.get(i).getMetadata().getTitle() + "\n" +
+                                "publishdate:" + videosDataArrayList.get(i).getMetadata().getPublishDate() + "\n" +
+                                "Description:" + videosDataArrayList.get(i).getMetadata().getDescription() + "\n" + "\n");
 
-                            ArrayList<VideoThumbnails> videoThumbnailsArrayList = videosDataArrayList.get(i).getThumbnails();
-                            Log.d(TAG, "onResponse:  \n" +
-                                    "url:" + videoThumbnailsArrayList.get(2).getUrl() + "\n");
+                        ArrayList<VideoThumbnails> videoThumbnailsArrayList = videosDataArrayList.get(i).getThumbnails();
+                        Log.d(TAG, "onResponse:  \n" +
+                                "url:" + videoThumbnailsArrayList.get(2).getUrl() + "\n");
 
-                            ArrayList<VideoAssets> videoAssetsArrayList = videosDataArrayList.get(i).getAssets();
+                        ArrayList<VideoAssets> videoAssetsArrayList = videosDataArrayList.get(i).getAssets();
 
-                            Log.d(TAG, "onResponse:  \n" +
-                                    "urlVideo:" + videoAssetsArrayList.get(3).getUrl() + "\n");
+                        Log.d(TAG, "onResponse:  \n" +
+                                "urlVideo:" + videoAssetsArrayList.get(3).getUrl() + "\n");
 
 
-                            contentId = videosDataArrayList.get(i).getContentId();
-                            title = videosDataArrayList.get(i).getMetadata().getTitle();
-                            description = videosDataArrayList.get(i).getMetadata().getDescription();
-                            imgUrl = videoThumbnailsArrayList.get(2).getUrl();
-                            videoUrl = videoAssetsArrayList.get(3).getUrl();
+                        contentId = videosDataArrayList.get(i).getContentId();
+                        title = videosDataArrayList.get(i).getMetadata().getTitle();
+                        description = videosDataArrayList.get(i).getMetadata().getDescription();
+                        imgUrl = videoThumbnailsArrayList.get(2).getUrl();
+                        videoUrl = videoAssetsArrayList.get(3).getUrl();
 
 
-                            VideoData videoData = new VideoData(contentId, title, description, imgUrl, videoUrl);
-                            videoDataArrayList.add(videoData);
-
-                        }
-                        videoAdapter.addItems(videoDataArrayList);
-                        if (currentPage == 300) {
-                            isLastPage = true;
-                        }
-                        isLoading = false;
+                        VideoData videoData = new VideoData(contentId, title, description, imgUrl, videoUrl);
+                        videoDataArrayList.add(videoData);
 
                     }
-
-                    @Override
-                    public void onFailure(Call<FeedVideo> call, Throwable t) {
-                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
-                        alertDialog.setTitle("Not connected to Internet!");
-                        alertDialog.setCancelable(false);
-
-                        alertDialog.setPositiveButton("Retry", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                callingVideoApi(currentPage);
-                            }
-                        });
-                        alertDialog.setNegativeButton("Exit", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                getActivity().finish();
-                                System.exit(0);
-
-                            }
-                        });
-                        AlertDialog alertDialog1 = alertDialog.create();
-                        alertDialog1.show();
-
-
+                    videoAdapter.addItems(videoDataArrayList);
+                    if (currentPage == 300) {
+                        isLastPage = true;
                     }
-                });
+                    isLoading = false;
 
-            }
+                }
+
+                @Override
+                public void onFailure(Call<FeedVideo> call, Throwable t) {
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
+                    alertDialog.setTitle("Not connected to Internet!");
+                    alertDialog.setCancelable(false);
+
+                    alertDialog.setPositiveButton("Retry", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            callingVideoApi(currentPage);
+                        }
+                    });
+                    alertDialog.setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            getActivity().finish();
+                            System.exit(0);
+
+                        }
+                    });
+                    AlertDialog alertDialog1 = alertDialog.create();
+                    alertDialog1.show();
+
+
+                }
+            });
+
         }, 1500);
 
     }
