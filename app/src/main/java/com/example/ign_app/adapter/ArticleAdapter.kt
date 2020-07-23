@@ -48,11 +48,11 @@ import java.util.*
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
 
-            val CApi = retrofit.create(CommentApi::class.java)
-            val call2 = CApi.getCommentCount(articleDataList[position].contentId)
+            val commentApi = retrofit.create(CommentApi::class.java)
+            val callComment = commentApi.getCommentCount(articleDataList[position].contentId)
 
             doAsync {
-                call2!!.enqueue(object : Callback<CommentApiResponse> {
+                callComment!!.enqueue(object : Callback<CommentApiResponse> {
                     override fun onResponse(call: Call<CommentApiResponse>, response: Response<CommentApiResponse>) {
                         contentCommentArrayList = response.body()!!.content
                         holder.card.comments.text = contentCommentArrayList!![0].count

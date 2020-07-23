@@ -44,9 +44,9 @@ class VideoAdapter(private val mContext: Context, private val videoDataList: Mut
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
-        val CApi = retrofit.create(CommentApi::class.java)
-        val call2 = CApi.getCommentCount(videoDataList[position].contentId)
-        call2.enqueue(object : Callback<CommentApiResponse> {
+        val commentApi = retrofit.create(CommentApi::class.java)
+        val callComment = commentApi.getCommentCount(videoDataList[position].contentId)
+            callComment.enqueue(object : Callback<CommentApiResponse> {
             override fun onResponse(call: Call<CommentApiResponse>, response: Response<CommentApiResponse>) {
                 contentCommentArrayList = response.body()!!.content
                 holder.card.Comments_count.text = contentCommentArrayList!![0].count
