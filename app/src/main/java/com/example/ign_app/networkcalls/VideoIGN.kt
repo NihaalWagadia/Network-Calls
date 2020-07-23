@@ -10,7 +10,7 @@ interface VideoIGN {
     @Headers("Content-Type: application/json")
     @GET("videos")
     fun getVideoData(@Query("startIndex") startIndex: Int,
-                     @Query("count") count: Int): Call<FeedVideo?>?
+                     @Query("count") count: Int): Call<FeedVideo>
 
     companion object {
         const val BASE_URL = "https://ign-apis.herokuapp.com/"

@@ -1,6 +1,7 @@
 package com.example.ign_app.activities
 
 import android.app.AlertDialog
+import android.app.ProgressDialog
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -40,33 +41,19 @@ class ArticleTab : Fragment() {
     var isLoading = false
     private lateinit var adapter :ArticleAdapter
     var layoutManager: LinearLayoutManager? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
             callingApi(currentPage)
 
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        view1 = inflater.inflate(R.layout.fragment_article_tab, container, false)
-        recyclerView = view1.findViewById(R.id.recyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.setHasFixedSize(true)
-        adapter = ArticleAdapter(context!!, ArrayList())
-        recyclerView.adapter = adapter
+                              savedInstanceState: Bundle?): View? =
+            inflater.inflate(R.layout.fragment_article_tab, container, false)
 
-//        recyclerView!!.addOnScrollListener(object : PaginationScrollListener(layoutManager!!) {
-//            override fun loadMoreItems() {
-//                isLoading = true
-//                currentPage += 10
-//                callingApi(currentPage)
-//            }
-//
-//            override val isLastPage: Boolean = false
-//
-//            override var isLoading: Boolean = false
-//        })
+
+
 
 //        layoutManager = LinearLayoutManager(context)
 
@@ -74,7 +61,32 @@ class ArticleTab : Fragment() {
 //        recyclerView.setAdapter(adapter)
 //        rv.adapter = HabitsAdapter(HabitDbTable(this).readAllHabits())
 
-        return view
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        recyclerView = view.findViewById(R.id.recyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.setHasFixedSize(true)
+        adapter = ArticleAdapter(context!!, ArrayList())
+        recyclerView.adapter = adapter
+        recyclerView.addOnScrollListener(object : PaginationScrollListener((recyclerView.layoutManager as LinearLayoutManager)!!) {
+                override fun loadMoreItems() {
+                    this@ArticleTab.isLoading = true
+                    currentPage += 10
+                    callingApi(currentPage)
+                    val progressDialog = ProgressDialog(context)
+                    progressDialog.setMessage("Loading")
+                    progressDialog.setCancelable(false)
+                    progressDialog.show()
+                    Handler().postDelayed({progressDialog.dismiss()},3000)
+                }
+
+                override var isLastPage: Boolean = false
+
+                override var isLoading: Boolean = false
+            })
+
     }
 
     private fun callingApi(index: Int) {

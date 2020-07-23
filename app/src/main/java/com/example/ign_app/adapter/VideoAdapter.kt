@@ -63,11 +63,11 @@ class VideoAdapter(private val mContext: Context, private val videoDataList: Mut
     }
 
     override fun getItemCount(): Int {
-        return videoDataList.size
+        return videoDataList!!.size
     }
 
     fun addItems(videoData: Collection<VideoData>) {
-        videoDataList.addAll(videoData)
+        videoDataList?.addAll(videoData)
         notifyDataSetChanged()
     }
 

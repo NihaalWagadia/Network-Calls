@@ -9,7 +9,7 @@ class FeedVideo {
 
     @SerializedName("data")
     @Expose
-    var data: ArrayList<VideosData>? = null
+    lateinit var data: ArrayList<VideosData>
     override fun toString(): String {
         return "Feed{" +
                 "data=" + data +
